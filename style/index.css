@@ -1,0 +1,38 @@
+#app{
+    display: flex;
+    height: 100vh;
+    gap: 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.tablero{
+    width: 400px;
+    height: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: antiquewhite;
+}
+.info{
+    padding: 10px;
+    width: 400px;
+    margin: 0 auto;
+}
+h1{
+    text-align: center
+}
+.row{
+    margin: 0 auto;
+    display: flex;
+}
+.cell{
+    width: 120px;
+    height: 120px;
+    text-align: center;
+    line-height: 120px;
+    font-size: 80px;
+    border: 1px black solid;
+}
