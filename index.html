@@ -9,7 +9,12 @@
 <body>
     <div id="app">
         <h1>Tic-Tac-Toe</h1>
-        <div class="info"></div>
+        <div class="info-container">
+            <div class="info"></div>
+            <!-- <div class="create-online-room-container">
+                <button>create online ROOM</button>
+            </div> -->
+        </div>
         <div class="tablero">
             <div class="row">
                 <div class="cell"></div>
@@ -26,8 +31,14 @@
                 <div class="cell"></div>
                 <div class="cell"></div>
             </div>
+            <dialog>
+                <h3>Siguiente partida en:</h3>
+                <span class="counter"></span>
+                <button class="boton-abandonar" >cerrar</button>
+            </dialog>
         </div>
     </div>
+    <script type="module" src="js/rtccon.js"></script>
     <script type="module" src="js/index.js"></script>
 </body>
 </html>

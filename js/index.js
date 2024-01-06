@@ -1,7 +1,11 @@
 const __= (q)=>(document.querySelector(q))
 const _all_= (q)=>(document.querySelectorAll(q))
 const infoArea = __('.info')
+const dialog = __('dialog')
 const cells = _all_('.cell')
+const sc = __('.counter')
+const ba = __('.boton-abandonar')
+ba.addEventListener('click',closeDialog)
 
 const mark = (c)=>(c?"⭕":"✖️")
 const game = {
@@ -29,9 +33,31 @@ const updateInfo = (winner=null)=>{
     infoArea.innerHTML += `<br><b>Player [${mark(game.p0.circle)}]: </b>${game.p0.name} [${game.p0.score}] ${(winner==="p0"&&"GANADOR") || (winner==="pp"&&"EMPATE") || ""}`
     infoArea.innerHTML += `<br><b>Player [${mark(game.p1.circle)}]: </b>${game.p1.name} [${game.p1.score}] ${(winner==="p1"&&"GANADOR") || (winner==="pp"&&"EMPATE") || ""}`
     infoArea.innerHTML += `<br><b>Play: </b>${mark(game[`p${game.play}`].circle)}`
+
+
 }
 
-const reiniciar = ()=>{
+function regresivo(sec=null,counter= 5){
+    const now = new Date();
+    const second = now.getSeconds()
+    if(sec !== second){
+        console.log(counter);
+        sc.innerHTML = `${counter}<br/>`;
+        counter = counter-1
+    }
+    
+    if(counter>=0){
+        requestAnimationFrame(()=>{regresivo(second,counter)})
+    }else{
+        closeDialog()
+    }
+}
+
+function closeDialog(){
+    dialog.close()
+}
+
+function reiniciar(){
     game.p0.moves=[];
     game.p1.moves=[];
     cells.forEach((c,i)=>{
@@ -57,6 +83,8 @@ const processMove = (i) => {
         game[pkey].score += 1
         _won.forEach((t)=>{cells[t-1].style.backgroundColor = "red"})
         updateInfo(pkey);
+        dialog.show();
+        regresivo();
         setTimeout(reiniciar,5000)
     }else{
         game.move += 1
@@ -65,6 +93,8 @@ const processMove = (i) => {
         if(game.p0.moves.length >= 5 || game.p1.moves.length >= 5){
             cells.forEach((t)=>{t.style.backgroundColor = "gray"})
             updateInfo("pp")
+            dialog.show();
+            regresivo();
             setTimeout(reiniciar,5000)
         }
     }
