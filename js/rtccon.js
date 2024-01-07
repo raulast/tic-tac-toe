@@ -1,37 +1,43 @@
-import { v4 as uuidv4 } from 'https://jspm.dev/uuid';
 const peersEl = document.getElementById("peers");
 const msgsEl = document.getElementById("msgs");
 const msgBufferInputEl = document.getElementById("msgBuffer");
-const mySessionId = ()=>(localStorage.getItem("mySessionId"))
+function mySessionId(){
+  return localStorage.getItem("mySessionId")
+}
 
 // para efectos del ejemplo
 const peers = new Map();
 window.peers = peers;
 function show(msg) {
-  const newMsgEl = document.createElement("div");
-  newMsgEl.innerText = msg;
-  msgsEl?.appendChild(newMsgEl);
-}
-msgBufferInputEl.onkeydown = (ev) => {
-  if (ev.key === "Enter") {
-    const msg = msgBufferInputEl.value;
-    msgBufferInputEl.value = "";
-    show(msg);
-    for (const [sessionId, {dataChannel}] of peers.entries()) {
-      if (dataChannel === void 0) {
-        console.warn(`Could not send to ${sessionId}; no data channel`);
-        continue;
-      }
-      try {
-        dataChannel.send(msg);
-      } catch (err) {
-        console.error(`Error sending to ${sessionId}: ${err}`);
-      }
-    }
+  // const newMsgEl = document.createElement("div");
+  // newMsgEl.innerText = msg;
+  // msgsEl?.appendChild(newMsgEl);
+  const mm = msg.split('::');
+  if(mm[0] && mm[1]){
+    filterMSG(mm[0],JSON.parse(mm[1]))
   }
-};
+}
+// msgBufferInputEl.onkeydown = (ev) => {
+//   if (ev.key === "Enter") {
+//     const msg = msgBufferInputEl.value;
+//     msgBufferInputEl.value = "";
+//     show(msg);
+//     for (const [sessionId, {dataChannel}] of peers.entries()) {
+//       if (dataChannel === void 0) {
+//         console.warn(`Could not send to ${sessionId}; no data channel`);
+//         continue;
+//       }
+//       try {
+//         dataChannel.send(msg);
+//       } catch (err) {
+//         console.error(`Error sending to ${sessionId}: ${err}`);
+//       }
+//     }
+//   }
+// };
 function showPeers() {
-  peersEl.innerText = [...peers.keys()].join(" || ");
+  // peersEl.innerText = [...peers.keys()].join(" || ");
+  setplayer2([...peers.keys()][0]||null)
 }
 
 // para efectos de la libreria 
@@ -104,10 +110,10 @@ function newPeer(sessionId) {
 }
 function setUpDataChannel(dataChannel, peer) {
   peer.dataChannel = dataChannel;
-  dataChannel.onmessage = (msgEv) => show(`${peer.id} says: ${msgEv.data}`);
+  dataChannel.onmessage = (msgEv) => show(`${msgEv.data}`);
 }
 async function handleHello(remoteSessionId) {
-  if (remoteSessionId === mySessionId())
+  if (remoteSessionId === mySessionId() && !room)
     return;
   if (peers.has(remoteSessionId)) {
     throw new Error("Received hello from existing peer!");
@@ -213,6 +219,7 @@ function start(url=`${window.location.origin.replace("http","ws")}/tic-tac-toe`)
         break;
       case "register":
           localStorage.setItem("mySessionId",msg.session_id)
+          setplayer1()
           ws.send(JSON.stringify({
             type:"broadcast",
             from:msg.session_id,
@@ -250,7 +257,7 @@ function start(url=`${window.location.origin.replace("http","ws")}/tic-tac-toe`)
     console.log("@ws_onclose",e)
   }
 }
-window.start = (p)=>{
+window.startp = (p)=>{
   start(p)
 }
 
