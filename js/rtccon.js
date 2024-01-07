@@ -122,6 +122,9 @@ async function handleHello(remoteSessionId) {
   if (rr!==room) {
     throw new Error("Received hello from another room!");
   }
+  if (peers.size===1) {
+    throw new Error("Received hello from another player while playing!");
+  }
   remoteSessionId = remoteSessionId.split("::")[0]
   console.log("Received hello from", remoteSessionId);
   const peer = newPeer(remoteSessionId);
