@@ -8,6 +8,7 @@ const dialog = __('dialog')
 const cells = _all_('.cell')
 const sc = __('.counter')
 const ba = __('.boton-abandonar')
+const bmsg = __('.banner-message')
 ba.addEventListener('click',closeDialog)
 
 const mark = (c)=>(c?"⭕":"✖️")
@@ -40,6 +41,12 @@ const updateInfo = (winner=null)=>{
 
 }
 
+function banner(msg,cnt=5){
+    bmsg.innerHTML=(msg)
+    dialog.show()
+    regresivo(null,cnt)
+}
+
 function filterMSG(hash,msg){
     if(`${hash}`===`${room}`){
         game.p0.session_id = msg.p0.session_id
@@ -60,6 +67,7 @@ function setplayer1(){
 }
 function setplayer2(ssid){
     game.p1.session_id = ssid
+    banner("El jugador se ha conectado la partida comienza en:",10)
 }
 
 function regresivo(sec=null,counter= 5){
@@ -115,7 +123,7 @@ const processMove = (i,ssid=mySessionId()) => {
         if(_won.length === 3){
             _won.forEach((t)=>{cells[t-1].style.backgroundColor = "red"})
             updateInfo(pkey);
-            dialog.show();
+            banner("Siguiente partida en:");
             regresivo();
             setTimeout(()=>{
                 game[pkey].score += 1
@@ -128,7 +136,7 @@ const processMove = (i,ssid=mySessionId()) => {
             if(game.p0.moves.length >= 5 || game.p1.moves.length >= 5){
                 cells.forEach((t)=>{t.style.backgroundColor = "gray"})
                 updateInfo("pp")
-                dialog.show();
+                banner("Siguiente partida en:");
                 regresivo();
                 setTimeout(reiniciar,5000)
             }

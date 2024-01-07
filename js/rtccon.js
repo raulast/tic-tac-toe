@@ -118,6 +118,11 @@ async function handleHello(remoteSessionId) {
   if (peers.has(remoteSessionId)) {
     throw new Error("Received hello from existing peer!");
   }
+  const rr = remoteSessionId.split("::")[1]
+  if (rr!==room) {
+    throw new Error("Received hello from another room!");
+  }
+  remoteSessionId = remoteSessionId.split("::")[0]
   console.log("Received hello from", remoteSessionId);
   const peer = newPeer(remoteSessionId);
   setUpDataChannel(peer.peerConn.createDataChannel("myDataChannel"), peer);
@@ -223,7 +228,7 @@ function start(url=`${window.location.origin.replace("http","ws")}/tic-tac-toe`)
           ws.send(JSON.stringify({
             type:"broadcast",
             from:msg.session_id,
-            msg:msg.session_id
+            msg:`${msg.session_id}::${room}`
           }))
         break;
       case "console.error":
